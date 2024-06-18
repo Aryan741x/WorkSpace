@@ -31,6 +31,9 @@ Welcome to WorkSpace, a cutting-edge application that integrates MongoDB and Opa
 - Node.js and npm installed.
 - Docker for creating containers.
 - Git to pull the forked repo.
+- As its Login Policy is linked to a repo, I will provide you with some username and password to test the project
+- Username:-john_doe(employee),jane_smith(manager) and emma_wilson(senior_manager)
+- Password:-Same as the Username
 
 ### Setup
 
