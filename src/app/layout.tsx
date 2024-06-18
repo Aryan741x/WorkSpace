@@ -16,6 +16,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+          <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+          <meta charSet="utf-8" />
+          <title>WorkSpace</title>
+          <meta name="description" content="WorkSpace, create your own work environment." />
+          <link rel="icon" type="image/png" sizes="16x16" href="/figure-svgrepo-com.svg" />
+      </head>
       <body className={inter.className}>{children}</body>
     </html>
   );
