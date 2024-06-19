@@ -71,6 +71,9 @@ node server.js
 npm run dev
 ```
 
+## Policy Repo
+- https://github.com/Aryan741x/opal-example-policy-repo
+
 ## Demo Video
 
 [![Watch the video](https://img.youtube.com/vi/uHIlTTT5g5M/maxresdefault.jpg)](https://www.youtube.com/watch?v=uHIlTTT5g5M)
