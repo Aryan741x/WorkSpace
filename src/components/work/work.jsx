@@ -5,15 +5,13 @@ import style from '../../styles/search.module.css';
 import Image from 'next/image';
 import Cookies from 'js-cookie';
 
-
-
-
 const Works = () => {
   const [works, setWorks] = useState([]);
   const [user, setUser] = useState('');
   const [manager, setManager] = useState(false);
   const [senior_manager, setSeniorManager] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [file, setFile] = useState(null);
 
   useEffect(() => {
     const token = Cookies.get('userToken');
@@ -158,6 +156,32 @@ const Works = () => {
     setSearchQuery(value);
   };
 
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleFileUpload = async (id) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('description', works.find(work => work._id === id).description);
+
+    try {
+      const response = await fetch(`http://localhost:3001/api/uploadFile/${id}`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await response.json();
+      if (data.success) {
+        console.log('File uploaded successfully');
+        alert(data.message);
+      } else {
+        console.error('Failed to upload file:', data.error);
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+  };
+
   if (works.length === 0) {
     return (
       <>
@@ -169,10 +193,10 @@ const Works = () => {
           className={styles.center}
         />
         <div className="flex items-center justify-center">
-      <h1 className="text-center text-3xl font-bold text-blue-600">
-        No Work Assigned Yet, Contact Your Manager
-      </h1>
-    </div>
+          <h1 className="text-center text-3xl font-bold text-blue-600">
+            No Work Assigned Yet, Contact Your Manager
+          </h1>
+        </div>
       </>
     );
   }
@@ -262,6 +286,10 @@ const Works = () => {
                   {!work.editable && manager && (
                     <button className={styles.btnu} onClick={() => toggleEditable(work._id)}>Update</button>
                   )}
+                </div>
+                <div>
+                  <input type="file" onChange={handleFileChange} />
+                  <button onClick={() => handleFileUpload(work._id)}>Upload</button>
                 </div>
               </div>
             )}

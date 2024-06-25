@@ -4,6 +4,7 @@ const fetch = require('isomorphic-fetch');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const Work = require('./src/app/models/work');
+const fileUploadRoute = require('./src/routes/fileUploadRoute');
 require('dotenv').config();
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true,
 }));
+app.use('/api', fileUploadRoute);
 
 mongoose.connect(MONGODB_URI)
   .then(() => console.log('Connected to database'))
