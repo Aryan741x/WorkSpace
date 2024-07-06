@@ -35,11 +35,16 @@ def embed_text(text):
     inputs = tokenizer(text, return_tensors='pt', truncation=True, padding=True, max_length=512)
     outputs = model(**inputs)
     embeddings = outputs.last_hidden_state.mean(dim=1).detach().numpy()
-    return embeddings
+    return embeddings.flatten()  # Flatten to 1-D vector
 
 def compute_similarity(uploaded_document, descriptions):
     doc_embedding = embed_text(uploaded_document)
     description_embeddings = [embed_text(desc) for desc in descriptions]
+    
+    print(f"Document Embedding Shape: {doc_embedding.shape}")
+    for i, desc_emb in enumerate(description_embeddings):
+        print(f"Description {i + 1} Embedding Shape: {desc_emb.shape}")
+    
     similarity_scores = [1 - cosine(doc_embedding, desc_emb) for desc_emb in description_embeddings]
     return similarity_scores
 
