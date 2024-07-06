@@ -14,6 +14,8 @@ const Works = () => {
   const [manager, setManager] = useState(false);
   const [senior_manager, setSeniorManager] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [file, setFile] = useState(null);
+  const [similarityScores, setSimilarityScores] = useState({});
 
   useEffect(() => {
     const token = Cookies.get('userToken');
@@ -158,6 +160,42 @@ const Works = () => {
     setSearchQuery(value);
   };
 
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+  const handleFileUpload = async (id) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('description', works.find(work => work._id === id).description);
+
+    try {
+      const response = await fetch(`http://localhost:5000/process-file`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload file');
+      }
+
+      const data = await response.json();
+      console.log('Response Data:', data); // Add this line to check the response
+
+      if (data.success) {
+        console.log('File uploaded successfully');
+        alert('File uploaded successfully');
+        setSimilarityScores(prevScores => ({ ...prevScores, [id]: data.scores }));
+        useEffect(() => {
+          console.log('Similarity Scores:', similarityScores); // Add this line to check the state
+        }, [similarityScores]);
+      } else {
+        console.error('Failed to upload file:', data.message);
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+  };
+
   if (works.length === 0) {
     return (
       <>
@@ -169,10 +207,10 @@ const Works = () => {
           className={styles.center}
         />
         <div className="flex items-center justify-center">
-      <h1 className="text-center text-3xl font-bold text-blue-600">
-        No Work Assigned Yet, Contact Your Manager
-      </h1>
-    </div>
+          <h1 className="text-center text-3xl font-bold text-blue-600">
+            No Work Assigned Yet, Contact Your Manager
+          </h1>
+        </div>
       </>
     );
   }
@@ -263,6 +301,20 @@ const Works = () => {
                     <button className={styles.btnu} onClick={() => toggleEditable(work._id)}>Update</button>
                   )}
                 </div>
+                <div>
+                  <input type="file" onChange={handleFileChange} />
+                  <button onClick={() => handleFileUpload(work._id)}>Upload</button>
+                </div>
+                {similarityScores[work._id] && (
+                  <div>
+                    <h3>Similarity Scores:</h3>
+                    <ul>
+                      {similarityScores[work._id].map((score, index) => (
+                        <li key={index}>Description {index + 1}: {score.toFixed(2)}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             )}
           </li>
