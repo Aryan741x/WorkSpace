@@ -1,8 +1,12 @@
+'use client';
 import React, { useState, useEffect } from 'react';
 import styles from '../../styles/works.module.css';
 import style from '../../styles/search.module.css';
 import Image from 'next/image';
 import Cookies from 'js-cookie';
+
+
+
 
 const Works = () => {
   const [works, setWorks] = useState([]);
@@ -159,25 +163,24 @@ const Works = () => {
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
-
   const handleFileUpload = async (id) => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('description', works.find(work => work._id === id).description);
-  
+
     try {
       const response = await fetch(`http://localhost:5000/process-file`, {
         method: 'POST',
         body: formData,
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to upload file');
       }
-  
+
       const data = await response.json();
       console.log('Response Data:', data); // Add this line to check the response
-  
+
       if (data.success) {
         console.log('File uploaded successfully');
         alert('File uploaded successfully');
@@ -192,7 +195,7 @@ const Works = () => {
       console.error('Error uploading file:', error);
     }
   };
-  
+
   if (works.length === 0) {
     return (
       <>
@@ -215,39 +218,76 @@ const Works = () => {
   return (
     <div>
       <div className={styles.header}>
-        <h1 className={styles.h1}>Search Work</h1>
-        <input
-          className={style.input}
-          type="text"
-          value={searchQuery}
-          onChange={(e) => handleSearch(e.target.value)}
-          placeholder="Search works..."
-        />
+        <h1 className={styles.h}>List of Work Here</h1>
+        <div className={style.searchBar}>
+          <input type="text" placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)} className={style.input} />
+          <button className={style.button}>🔍</button>
+        </div>
       </div>
-      <ul>
+      <ul className={styles.container}>
         {filteredWorks.map((work) => (
           <li key={work._id} className={styles.workItem}>
-            <h2 className={styles.title} onClick={() => toggleDetails(work._id)}>{work.title}</h2>
-            {work.expanded && (
-              <div>
-                <p>Description: <span>{work.editable ? (
+            <div className={styles.titleRow} onClick={() => toggleDetails(work._id)}>
+              <h2>
+                {work.editable ? (
                   <input
                     type="text"
+                    value={work.title}
+                    onChange={(e) => handleInputChange(work._id, 'title', e.target.value)}
+                  />
+                ) : (
+                  <p>{work.title}</p>
+                )}
+              </h2>
+              {manager && work.editable && (
+                <div>
+                  <span className={styles.status}>Status:</span>
+                  <input
+                    type="checkbox"
+                    checked={work.isChecked || false}
+                    onChange={(e) => handleCheckboxChange(work._id, e.target.checked)}
+                    className={styles.checkbox}
+                  />
+                </div>
+              )}
+            </div>
+            {work.expanded && (
+              <div className={styles.details}>
+                <h3><u>Description:</u></h3>
+                {work.editable ? (
+                  <textarea
                     value={work.description}
                     onChange={(e) => handleInputChange(work._id, 'description', e.target.value)}
                   />
                 ) : (
-                  <span>{work.description}</span>
-                )}</span></p>
-                <p>Duration: <span>{work.editable ? (
-                  <input
-                    type="text"
-                    value={work.duration}
-                    onChange={(e) => handleInputChange(work._id, 'duration', e.target.value)}
-                  />
-                ) : (
-                  <span>{work.duration}</span>
-                )}</span></p>
+                  <p>{work.description}</p>
+                )}
+                <br />
+                <p>
+                  <span>Task Assigned To: {work.editable ? (
+                    <input
+                      type="text"
+                      value={work.taskto}
+                      onChange={(e) => handleInputChange(work._id, 'taskto', e.target.value)}
+                    />
+                  ) : (
+                    <span>{work.taskto}</span>
+                  )}</span>
+                </p>
+                <br />
+                <p>
+                  <span>Duration: {work.editable ? (
+                    <input
+                      type="text"
+                      value={work.duration}
+                      onChange={(e) => handleInputChange(work._id, 'duration', e.target.value)}
+                    />
+                  ) : (
+                    <span>{work.duration}</span>
+                  )}</span>
+                </p>
                 <p>Created At: {new Date(work.createdAt).toLocaleString()}</p>
                 <p>Updated At: {new Date(work.updatedAt).toLocaleString()}</p>
                 <div className={styles.buttons}>
@@ -266,16 +306,15 @@ const Works = () => {
                   <button onClick={() => handleFileUpload(work._id)}>Upload</button>
                 </div>
                 {similarityScores[work._id] && (
-  <div>
-    <h3>Similarity Scores:</h3>
-    <ul>
-      {similarityScores[work._id].map((score, index) => (
-        <li key={index}>Description {index + 1}: {score.toFixed(2)}</li>
-      ))}
-    </ul>
-  </div>
-)}
-
+                  <div>
+                    <h3>Similarity Scores:</h3>
+                    <ul>
+                      {similarityScores[work._id].map((score, index) => (
+                        <li key={index}>Description {index + 1}: {score.toFixed(2)}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             )}
           </li>

@@ -12,7 +12,7 @@ CORS(app)
 
 # MongoDB connection
 uri = "mongodb://localhost:27017"
-db_name = "test_db"
+db_name = "test"
 collection_name = "works"
 client = pymongo.MongoClient(uri)
 db = client[db_name]
@@ -46,6 +46,7 @@ def compute_similarity(uploaded_document, descriptions):
         print(f"Description {i + 1} Embedding Shape: {desc_emb.shape}")
     
     similarity_scores = [1 - cosine(doc_embedding, desc_emb) for desc_emb in description_embeddings]
+    print(similarity_scores)
     return similarity_scores
 
 @app.route('/process-file', methods=['POST'])
