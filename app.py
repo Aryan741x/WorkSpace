@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import pymongo
 import torch
 from transformers import BertTokenizer, BertModel
@@ -7,6 +8,7 @@ from scipy.spatial.distance import cosine
 import os
 
 app = Flask(__name__)
+CORS(app)
 
 # MongoDB connection
 uri = "mongodb://localhost:27017"
@@ -14,6 +16,16 @@ db_name = "test_db"
 collection_name = "works"
 client = pymongo.MongoClient(uri)
 db = client[db_name]
+
+# Debug route to check MongoDB connection
+@app.route('/check-mongodb-connection', methods=['GET'])
+def check_mongodb_connection():
+    try:
+        # Attempt to get a list of collections to verify the connection
+        collections = db.list_collection_names()
+        return jsonify({'success': True, 'message': 'Connected to MongoDB', 'collections': collections}), 200
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
 
 # Load BERT model and tokenizer
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')

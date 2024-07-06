@@ -164,25 +164,35 @@ const Works = () => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('description', works.find(work => work._id === id).description);
-
+  
     try {
-      const response = await fetch(`http://localhost:5000/process-file`, { // Updated URL
+      const response = await fetch(`http://localhost:5000/process-file`, {
         method: 'POST',
         body: formData,
       });
+  
+      if (!response.ok) {
+        throw new Error('Failed to upload file');
+      }
+  
       const data = await response.json();
+      console.log('Response Data:', data); // Add this line to check the response
+  
       if (data.success) {
         console.log('File uploaded successfully');
         alert('File uploaded successfully');
         setSimilarityScores(prevScores => ({ ...prevScores, [id]: data.scores }));
+        useEffect(() => {
+          console.log('Similarity Scores:', similarityScores); // Add this line to check the state
+        }, [similarityScores]);
       } else {
-        console.error('Failed to upload file:', data.error);
+        console.error('Failed to upload file:', data.message);
       }
     } catch (error) {
       console.error('Error uploading file:', error);
     }
   };
-
+  
   if (works.length === 0) {
     return (
       <>
@@ -256,15 +266,16 @@ const Works = () => {
                   <button onClick={() => handleFileUpload(work._id)}>Upload</button>
                 </div>
                 {similarityScores[work._id] && (
-                  <div>
-                    <h3>Similarity Scores:</h3>
-                    <ul>
-                      {similarityScores[work._id].map((score, index) => (
-                        <li key={index}>Description {index + 1}: {score.toFixed(2)}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+  <div>
+    <h3>Similarity Scores:</h3>
+    <ul>
+      {similarityScores[work._id].map((score, index) => (
+        <li key={index}>Description {index + 1}: {score.toFixed(2)}</li>
+      ))}
+    </ul>
+  </div>
+)}
+
               </div>
             )}
           </li>
