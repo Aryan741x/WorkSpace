@@ -1,4 +1,8 @@
-/* works.module.css */
+.body{
+  background: rgb(255, 255, 255); 
+  min-height: 100vh;
+  padding: 20px;
+}
 .container {
   border: 1px solid #ccc;
   margin: 25px auto;

@@ -179,14 +179,14 @@ const Works = () => {
       }
 
       const data = await response.json();
-      console.log('Response Data:', data); // Add this line to check the response
+      console.log('Response Data:', data); 
 
       if (data.success) {
         console.log('File uploaded successfully');
         alert('File uploaded successfully');
         setSimilarityScores(prevScores => ({ ...prevScores, [id]: data.scores }));
         useEffect(() => {
-          console.log('Similarity Scores:', similarityScores); // Add this line to check the state
+          console.log('Similarity Scores:', similarityScores); 
         }, [similarityScores]);
       } else {
         console.error('Failed to upload file:', data.message);
@@ -216,7 +216,7 @@ const Works = () => {
   }
 
   return (
-    <div>
+    <div className={styles.body}>
       <div className={styles.header}>
         <h1 className={styles.h}>List of Work Here</h1>
         <div className={style.searchBar}>
@@ -303,7 +303,7 @@ const Works = () => {
                 </div>
                 <div>
                   <input type="file" onChange={handleFileChange} />
-                  <button onClick={() => handleFileUpload(work._id)}>Upload</button>
+                  <button className={styles.btnu} onClick={() => handleFileUpload(work._id)}>Upload</button>
                 </div>
                 {similarityScores[work._id] && (
                   <div>
