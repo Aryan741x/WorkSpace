@@ -5,14 +5,12 @@ import style from '../../styles/search.module.css';
 import Image from 'next/image';
 import Cookies from 'js-cookie';
 
-export default function Works() {
+const Works = () => {
   const [works, setWorks] = useState([]);
   const [user, setUser] = useState('');
   const [manager, setManager] = useState(false);
   const [senior_manager, setSeniorManager] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [file, setFile] = useState(null);
-  const [similarityScores, setSimilarityScores] = useState({});
   const [file, setFile] = useState(null);
   const [similarityScores, setSimilarityScores] = useState({});
 
@@ -158,7 +156,7 @@ export default function Works() {
   const handleSearch = (value) => {
     setSearchQuery(value);
   };
-
+  
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
@@ -195,41 +193,6 @@ export default function Works() {
     }
   };
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-  const handleFileUpload = async (id) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('description', works.find(work => work._id === id).description);
-
-    try {
-      const response = await fetch(`http://localhost:5000/process-file`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to upload file');
-      }
-
-      const data = await response.json();
-      console.log('Response Data:', data); 
-
-      if (data.success) {
-        console.log('File uploaded successfully');
-        alert('File uploaded successfully');
-        setSimilarityScores(prevScores => ({ ...prevScores, [id]: data.scores }));
-        useEffect(() => {
-          console.log('Similarity Scores:', similarityScores); 
-        }, [similarityScores]);
-      } else {
-        console.error('Failed to upload file:', data.message);
-      }
-    } catch (error) {
-      console.error('Error uploading file:', error);
-    }
-  };
 
   if (works.length === 0) {
     return (
@@ -242,21 +205,16 @@ export default function Works() {
           className={styles.center}
         />
         <div className="flex items-center justify-center">
-          <h1 className="text-center text-3xl font-bold text-blue-600">
-            No Work Assigned Yet, Contact Your Manager
-          </h1>
-        </div>
-          <h1 className="text-center text-3xl font-bold text-blue-600">
-            No Work Assigned Yet, Contact Your Manager
-          </h1>
-        </div>
+      <h1 className="text-center text-3xl font-bold text-blue-600">
+        No Work Assigned Yet, Contact Your Manager
+      </h1>
+    </div>
       </>
     );
   }
 
   return (
-    <div className={styles.body}>
-    <div className={styles.body}>
+    <div>
       <div className={styles.header}>
         <h1 className={styles.h}>List of Work Here</h1>
         <div className={style.searchBar}>
@@ -362,3 +320,5 @@ export default function Works() {
     </div>
   );
 };
+
+export default Works;

@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html>
       <head>
           <meta name="viewport" content="initial-scale=1.0, width=device-width" />
           <meta charSet="utf-8" />
