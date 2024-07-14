@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -15,8 +14,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html>
+    <head>
+          <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+          <meta charSet="utf-8" />
+          <title>WorkSpace</title>
+          <meta name="description" content="WorkSpace, create your own work environment." />
+          <link rel="icon" type="image/png" sizes="16x16" href="/figure-svgrepo-com.svg" />
+      </head>
       <body className={inter.className}>{children}</body>
-    </html>
+    </html >
   );
 }
