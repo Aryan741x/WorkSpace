@@ -95,6 +95,7 @@ app.post('/api/addWork', async (req, res) => {
       "description": description,
       "taskto": taskto,
       "duration": duration,
+      "score":0,
     });
 
     await newWork.save();
@@ -130,6 +131,27 @@ app.delete('/api/deleteWork/:id', async (req, res) => {
   }
 });
 
+app.put('/api/updateScore/:id', async (req, res) => {
+  try {
+    const work = await Work.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: {
+          score: req.body.score,
+          updatedAt: Date.now(),
+        },
+      },
+      { new: true }
+    );
+    if (!work) {
+      return res.status(404).json({ success: false, error: 'Work not found' });
+    }
+    res.json({ success: true, data: work });
+  } catch (error) {
+    console.error('Error updating work:', error);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
 
 app.put('/api/updateWork/:id', async (req, res) => {
   try {

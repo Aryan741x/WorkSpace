@@ -12,7 +12,7 @@ const Works = () => {
   const [senior_manager, setSeniorManager] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [file, setFile] = useState(null);
-  const [similarityScores, setSimilarityScores] = useState({});
+  const [similarityScores, setSimilarityScores] = useState(0);
 
   useEffect(() => {
     const token = Cookies.get('userToken');
@@ -156,7 +156,7 @@ const Works = () => {
   const handleSearch = (value) => {
     setSearchQuery(value);
   };
-  
+
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
@@ -166,7 +166,7 @@ const Works = () => {
     formData.append('description', works.find(work => work._id === id).description);
 
     try {
-      const response = await fetch(`http://localhost:5000/process-file`, {
+      const response = await fetch('http://localhost:5000/process-file', {
         method: 'POST',
         body: formData,
       });
@@ -176,15 +176,34 @@ const Works = () => {
       }
 
       const data = await response.json();
-      console.log('Response Data:', data); 
+      console.log('Response Data:', data);
 
       if (data.success) {
         console.log('File uploaded successfully');
         alert('File uploaded successfully');
         setSimilarityScores(prevScores => ({ ...prevScores, [id]: data.scores }));
-        useEffect(() => {
-          console.log('Similarity Scores:', similarityScores); 
-        }, [similarityScores]);
+
+        const score = Math.round(data.scores[0] * 100);
+
+        // Update similarity scores in MongoDB
+        const updateResponse = await fetch(`http://localhost:3001/api/updateScore/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ score }),
+        });
+
+        if (!updateResponse.ok) {
+          throw new Error('Failed to update similarity scores in the database');
+        }
+
+        const updateData = await updateResponse.json();
+        if (updateData.success) {
+          console.log('Similarity scores updated in the database successfully');
+        } else {
+          console.error('Failed to update similarity scores in the database:', updateData.message);
+        }
       } else {
         console.error('Failed to upload file:', data.message);
       }
@@ -192,6 +211,7 @@ const Works = () => {
       console.error('Error uploading file:', error);
     }
   };
+
 
 
   if (works.length === 0) {
@@ -205,10 +225,10 @@ const Works = () => {
           className={styles.center}
         />
         <div className="flex items-center justify-center">
-      <h1 className="text-center text-3xl font-bold text-blue-600">
-        No Work Assigned Yet, Contact Your Manager
-      </h1>
-    </div>
+          <h1 className="text-center text-3xl font-bold text-blue-600">
+            No Work Assigned Yet, Contact Your Manager
+          </h1>
+        </div>
       </>
     );
   }
@@ -299,17 +319,21 @@ const Works = () => {
                     <button className={styles.btnu} onClick={() => toggleEditable(work._id)}>Update</button>
                   )}
                 </div>
-                <div>
+                <div className='my-5'>
                   <input type="file" onChange={handleFileChange} />
                   <button className={styles.btnu} onClick={() => handleFileUpload(work._id)}>Upload</button>
                 </div>
-                {similarityScores[work._id] && (
+                {similarityScores[work._id] && similarityScores[work._id].length > 0 ? (
                   <div>
                     <ul>
                       {similarityScores[work._id].map((score, index) => (
-                        <li key={index}>Description {index + 1}: {score.toFixed(2)}</li>
+                        <li key={index} className='my-5'>Latest Work document has {score.toFixed(2) * 100}% similarity with the added work.</li>
                       ))}
                     </ul>
+                  </div>
+                ) : (
+                  <div>
+                    {work.score>0 ?(<h1 className='my-5'>Prev Work Uploaded had a {work.score}% similarity with the added work.</h1>):(<h1 className='my-5'>No Description Added yet.</h1>)}
                   </div>
                 )}
               </div>

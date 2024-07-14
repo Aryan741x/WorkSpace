@@ -7,6 +7,7 @@ const WorkSchema = new mongoose.Schema({
   duration:{ type: String },
   createdAt: { type: Date, default: Date.now,immutable:true },
   updatedAt: { type: Date, default: Date.now },
+  score : { type: Number, default: 0 },
 });
 
 module.exports = mongoose.models.Work || mongoose.model('Work', WorkSchema);
