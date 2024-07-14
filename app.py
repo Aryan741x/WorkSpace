@@ -6,12 +6,13 @@ from transformers import BertTokenizer, BertModel
 import numpy as np
 from scipy.spatial.distance import cosine
 import os
+import .env
 
 app = Flask(__name__)
 CORS(app)
 
 # MongoDB connection
-uri = "mongodb://localhost:27017"
+uri = os.getenv('MONGODB_URI')
 db_name = "test"
 collection_name = "works"
 client = pymongo.MongoClient(uri)
@@ -43,10 +44,8 @@ def compute_similarity(uploaded_document, descriptions):
     
     print(f"Document Embedding Shape: {doc_embedding.shape}")
     for i, desc_emb in enumerate(description_embeddings):
-        print(f"Description {i + 1} Embedding Shape: {desc_emb.shape}")
     
     similarity_scores = [1 - cosine(doc_embedding, desc_emb) for desc_emb in description_embeddings]
-    print(similarity_scores)
     return similarity_scores
 
 @app.route('/process-file', methods=['POST'])
