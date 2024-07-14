@@ -1,8 +1,13 @@
+.body{
+  background: rgb(255, 255, 255); 
+  min-height: 100vh;
+  padding: 20px;
+}
 .container {
   border: 1px solid #ccc;
   margin: 25px auto;
   padding: 20px;
-  background-color: #fff;
+  background-color: #f9f9f9; 
   border-radius: 10px;
   width: 60%;
   max-width: 80%;
@@ -27,8 +32,14 @@
   cursor: pointer;
   padding: 15px;
   border-radius: 8px;
-  background-color: #f0f0f0;
+  background-color: #ffffff; 
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.workItem:hover {
+  background-color: #f0f0f0; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .workItem h2 {
@@ -49,7 +60,7 @@
   margin: 10px 0;
   font-size: 16px;
   color: #555;
-  word-wrap: break-word
+  word-wrap: break-word;
 }
 
 .details h3 {
@@ -63,7 +74,6 @@
   height: 100px;
   padding: 10px;
   margin: 10px 0;
-  text-wrap: wrap;
   resize: none;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -89,15 +99,10 @@
 
 .btn {
   display: inline-block;
-  position: relative;
-  left: -5%;
   font-weight: 400;
   color: #fff;
   text-align: center;
   vertical-align: middle;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
   background-color: #dc3545;
   border: 1px solid transparent;
@@ -106,12 +111,12 @@
   line-height: 1.5;
   border-radius: 0.25rem;
   font-weight: 500;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .btn:hover {
-  color: #fff;
   background-color: #c82333;
-  border-color: #bd2130;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .btnu {
@@ -120,9 +125,6 @@
   color: #fff;
   text-align: center;
   vertical-align: middle;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
   background-color: #007bff;
   border-color: #007bff;
@@ -131,26 +133,21 @@
   font-size: 1rem;
   line-height: 1.5;
   border-radius: 0.25rem;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
   font-weight: 500;
 }
 
 .btnu:hover {
-  color: #fff;
   background-color: #0069d9;
-  border-color: #0062cc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .btns {
   display: inline-block;
-  font-weight: 500;
   font-weight: 400;
   color: #fff;
   text-align: center;
   vertical-align: middle;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
   background-color: #28a745;
   border-color: #28a745;
@@ -159,13 +156,13 @@
   font-size: 1rem;
   line-height: 1.5;
   border-radius: 0.25rem;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  font-weight: 500;
 }
 
 .btns:hover {
-  color: #fff;
   background-color: #218838;
-  border-color: #1e7e34;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .center {
